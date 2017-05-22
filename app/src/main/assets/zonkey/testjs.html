@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+
+
+<!-- 主体内容 -->
+
+<button id="startTest"  class="p-btn video-btn" type="button">开始测试</button>
+
+<script type="text/javascript">
+
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+    if(isiOS) {
+        document.getElementById("startTest").addEventListener('click', onClickButtonios);
+    }
+    else if(isAndroid){
+        document.getElementById("startTest").addEventListener('click', onClickButtonadr);
+
+    }
+    //开始测试
+  function onClickButtonios(){
+
+      window.webkit.messageHandlers.jsCallOC.postMessage('startTest');
+
+    }
+    function onClickButtonadr(){
+        window.wx.huoqu();
+    };
+
+    var reMsg={
+        start : function(num){
+           document.write("接口1返回内容："+num)
+        },
+        secend: function(num){
+            document.write("接口2返回内容："+num)
+
+        },
+        queue : function (status,num){
+            if(status==0){
+                reMsg.start(num);
+            }else if(status==1) {
+                reMsg.secend(num);
+            }
+        }
+    };
+</script>
+</body>
+
+</html>

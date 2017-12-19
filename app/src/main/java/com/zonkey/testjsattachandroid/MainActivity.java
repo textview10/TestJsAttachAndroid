@@ -1,5 +1,7 @@
 package com.zonkey.testjsattachandroid;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
@@ -26,12 +28,14 @@ public class MainActivity extends AppCompatActivity {
         wv_test.addJavascriptInterface(JsApi.getInctance(), "wx");
     }
 
-    public void setWv() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                wv_test.loadUrl("javascript:reMsg.start('9')");
-            }
-        });
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case JsApi.REQUEST_CODE:
+                wv_test.loadUrl("javascript:showFromNative()");
+                break;
+        }
     }
 }

@@ -3,15 +3,19 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <script src="js/jquery.js"></script>
 </head>
 <body>
 
 
-<!-- 主体内容 -->
-
-<button id="startTest"  class="p-btn video-btn" type="button">开始测试</button>
+<div style="text-align: center">This is a WebView</div>
+<div>
+    <button id="startTest" type="button">To a Native Page</button>
+</div>
+<div>
+    <button id="testAndroidInvokeJsFunction" type="button"></button>
+</div>
 
 <script type="text/javascript">
 
@@ -19,39 +23,25 @@
     var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
     var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
 
-    if(isiOS) {
+    if (isiOS) {
         document.getElementById("startTest").addEventListener('click', onClickButtonios);
-    }
-    else if(isAndroid){
+    } else if (isAndroid) {
         document.getElementById("startTest").addEventListener('click', onClickButtonadr);
-
     }
+    document.getElementById("testAndroidInvokeJsFunction").addEventListener("click",onClickInvokeJs)
     //开始测试
-  function onClickButtonios(){
-
-      window.webkit.messageHandlers.jsCallOC.postMessage('startTest');
-
+    function onClickButtonios() {
+        window.webkit.messageHandlers.jsCallOC.postMessage('startTest');
     }
-    function onClickButtonadr(){
+
+    function onClickButtonadr() {
+        window.wx.toAnotherActivity();
+    };
+
+    function showFromNative() {
         window.wx.huoqu();
-    };
-
-    var reMsg={
-        start : function(num){
-           document.write("接口1返回内容："+num)
-        },
-        secend: function(num){
-            document.write("接口2返回内容："+num)
-
-        },
-        queue : function (status,num){
-            if(status==0){
-                reMsg.start(num);
-            }else if(status==1) {
-                reMsg.secend(num);
-            }
-        }
-    };
+        document.getElementById("testAndroidInvokeJsFunction").innerHTML = " receive a msg from Native";
+    }
 </script>
 </body>
 

@@ -3,14 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.zonkey.testjsattachandroid.MainActivity">
+    tools:context="com.zonkey.testjsattachandroid.WebViewActivity">
 
-    <WebView
-        android:id="@+id/wv_test"
+    <com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout
+        android:id="@+id/scroll_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/wv_test"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+    </com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_nodata"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/transparent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="没有数据,请尝试下拉刷新"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </RelativeLayout>

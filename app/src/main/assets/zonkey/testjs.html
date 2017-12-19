@@ -4,43 +4,83 @@
     <meta charset="UTF-8">
     <title></title>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-    <script src="js/jquery.js"></script>
+    <!--<script src="js/jquery.js"></script>-->
 </head>
 <body>
 
 
 <div style="text-align: center">This is a WebView</div>
 <div>
-    <button id="startTest" type="button">To a Native Page</button>
+    <button id="testAndroidInvokeJsFunction" type="button"></button>
 </div>
 <div>
-    <button id="testAndroidInvokeJsFunction" type="button"></button>
+    <button id="toNativePage" type="button" style="margin-top: 20px" >to a Android native page</button>
+</div>
+<div>
+    <button id="setRefresh" type="button" style="margin-top: 20px">开始刷新</button>
+</div>
+<div>
+    <button id="showEmpty" type="button" style="margin-top: 20px">无数据</button>
+</div>
+<div>
+    <button id="showWebView" type="button" style="margin-top: 20px">有数据</button>
 </div>
 
 <script type="text/javascript">
-
     var u = navigator.userAgent;
+    var mIsLoading = true;
+    var type = 1;
     var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
     var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    //    document.getElementById("testAndroidInvokeJsFunction").addEventListener("click", onClickInvokeJs)
+    document.getElementById("toNativePage").addEventListener("click", startActivity);
+    //
+    //    var btn_native = document.getElementById("toNativePage");
+    //    btn_native.onclick = Function("startActivity(1);");
+    var btn_refresh = document.getElementById("setRefresh");
+    btn_refresh.onclick = setLoading;
 
-    if (isiOS) {
-        document.getElementById("startTest").addEventListener('click', onClickButtonios);
-    } else if (isAndroid) {
-        document.getElementById("startTest").addEventListener('click', onClickButtonadr);
-    }
-    document.getElementById("testAndroidInvokeJsFunction").addEventListener("click",onClickInvokeJs)
-    //开始测试
-    function onClickButtonios() {
-        window.webkit.messageHandlers.jsCallOC.postMessage('startTest');
-    }
+    document.getElementById("showEmpty").addEventListener("click", showEmptyView);
+    document.getElementById("showWebView").addEventListener("click", showWebView);
 
-    function onClickButtonadr() {
-        window.wx.toAnotherActivity();
+    //打开一个原生Android界面,不同type对应不同界面
+    function startActivity() {
+        console.log("startActivity");
+        if (e.currentTarget.id == "toNativePage") {
+            type = 2;
+        }
+        window.zkzs.startActivity(type);
     };
 
+    //显示原生控件的loading 是否显示
+    function setLoading() {
+        window.zkzs.setLoading(mIsLoading);
+        mIsLoading = !mIsLoading;
+        console.log("" + mIsLoading);
+        if (mIsLoading) {
+            document.getElementById("setRefresh").innerHTML = "开始刷新";
+        } else {
+            document.getElementById("setRefresh").innerHTML = "结束刷新";
+        }
+    }
+
+    //显示无数据界面
+    function showEmptyView() {
+        window.zkzs.showEmptyView();
+    }
+
+    //显示有数据界面
+    function showWebView() {
+        window.zkzs.showWebView();
+    }
+
     function showFromNative() {
-        window.wx.huoqu();
+        window.zkzs.huoqu();
         document.getElementById("testAndroidInvokeJsFunction").innerHTML = " receive a msg from Native";
+    }
+
+    function showAlert() {
+        alert();
     }
 </script>
 </body>

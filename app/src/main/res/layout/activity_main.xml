@@ -1,35 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.zonkey.testjsattachandroid.WebViewActivity">
 
-    <com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout
-        android:id="@+id/scroll_swipe_refresh_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="56dp"
+        android:background="@color/colorPrimaryDark">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="返回"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="PPT控制"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout
+            android:id="@+id/scroll_swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <WebView
                 android:id="@+id/wv_test"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-    </com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout>
+        </com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_nodata"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:background="@android:color/transparent"
-        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/rl_nodata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="没有数据,请尝试下拉刷新"
-            android:layout_centerInParent="true"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="没有数据,请尝试下拉刷新"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

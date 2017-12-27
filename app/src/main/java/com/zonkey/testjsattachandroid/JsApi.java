@@ -21,7 +21,7 @@ public class JsApi {
     private WebView webView;
     private static final String TAG = "JsApi";
 
-    public static JsApi getInctance() {
+    public static JsApi getInstance() {
         if (mjs == null) {
             mjs = new JsApi();
         }
@@ -62,7 +62,7 @@ public class JsApi {
     //显示WebView
     @JavascriptInterface
     public void showWebView() {
-        Log.e(TAG, "showWebView ");
+        Log.e(TAG, "showWebView");
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

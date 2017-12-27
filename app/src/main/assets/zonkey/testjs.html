@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <title></title>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-    <!--<script src="js/jquery.js"></script>-->
 </head>
 <body>
 
 
 <div style="text-align: center">This is a WebView</div>
 <div>
-    <button id="testAndroidInvokeJsFunction" type="button"></button>
+    <button id="testAndroidInvokeJsFunction" type="text" style="text-align: center"></button>
 </div>
 <div>
-    <button id="toNativePage" type="button" style="margin-top: 20px" >to a Android native page</button>
+    <button id="toNativePage" type="button" style="margin-top: 20px">to a Android native page</button>
 </div>
 <div>
     <button id="setRefresh" type="button" style="margin-top: 20px">开始刷新</button>
@@ -25,18 +24,19 @@
 <div>
     <button id="showWebView" type="button" style="margin-top: 20px">有数据</button>
 </div>
+<div>
+    <image src="content://com.zonkey.testjsattachandroid/12345.jpg"></image>
+    <!--<image src=content://com.zonkey.testjsattachandroid/12345.jpg"></image>-->
+</div>
 
 <script type="text/javascript">
     var u = navigator.userAgent;
     var mIsLoading = true;
     var type = 1;
-    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-    //    document.getElementById("testAndroidInvokeJsFunction").addEventListener("click", onClickInvokeJs)
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //Android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //iOS终端
+
     document.getElementById("toNativePage").addEventListener("click", startActivity);
-    //
-    //    var btn_native = document.getElementById("toNativePage");
-    //    btn_native.onclick = Function("startActivity(1);");
     var btn_refresh = document.getElementById("setRefresh");
     btn_refresh.onclick = setLoading;
 
@@ -44,8 +44,7 @@
     document.getElementById("showWebView").addEventListener("click", showWebView);
 
     //打开一个原生Android界面,不同type对应不同界面
-    function startActivity() {
-        console.log("startActivity");
+    function startActivity(e) {
         if (e.currentTarget.id == "toNativePage") {
             type = 2;
         }
@@ -75,12 +74,18 @@
     }
 
     function showFromNative() {
-        window.zkzs.huoqu();
-        document.getElementById("testAndroidInvokeJsFunction").innerHTML = " receive a msg from Native";
+        document.getElementById("testAndroidInvokeJsFunction").innerHTML = " receive a msg from Android Native";
+    }
+    function getState(state){
+//        setLoading()
+        if (state == 1){
+            state = 41;
+        }
+        return state;
     }
 
     function showAlert() {
-        alert();
+        alert("12345");
     }
 </script>
 </body>

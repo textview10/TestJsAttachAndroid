@@ -3,12 +3,15 @@ package com.zonkey.testjsattachandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -18,6 +21,8 @@ import android.widget.RelativeLayout;
 
 import com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout;
 
+import java.io.File;
+
 /**
  * Created by xu.wang
  * Date on 2017/5/22 13:48
@@ -25,7 +30,7 @@ import com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout;
 public class WebViewActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private WebView wv_test;
     private ScrollSwipeRefreshLayout mSwipeRefreshLayout;
-    private String url = "http://www.baidu.com";
+    //    private String testUrl = "http://192.168.12.214:12091/";
     private String testUrl = "file:///android_asset/zonkey/testjs.html";
     private final static String TAG = "WebViewActivity";
     private final static String PROJECT_NAME = "zkzs";
@@ -38,14 +43,16 @@ public class WebViewActivity extends AppCompatActivity implements SwipeRefreshLa
         wv_test = (WebView) findViewById(R.id.wv_test);
         mSwipeRefreshLayout = (ScrollSwipeRefreshLayout) findViewById(R.id.scroll_swipe_refresh_layout);
         rl_nodata = (RelativeLayout) findViewById(R.id.rl_nodata);
-        JsApi.getInctance().initial(this);
+        JsApi.getInstance().initial(this);
         initData();
+        File file = new File(Environment.getExternalStorageDirectory(), "12345.jpg");
+        Log.e("WebViewActivity", "path = " + file.getPath() + "exists = " + file.exists());
     }
 
     private void initData() {
         wv_test.getSettings().setJavaScriptEnabled(true);
         wv_test.loadUrl(testUrl);
-        wv_test.addJavascriptInterface(JsApi.getInctance(), PROJECT_NAME);
+        wv_test.addJavascriptInterface(JsApi.getInstance(), PROJECT_NAME);
         mSwipeRefreshLayout.setColorSchemeColors(Color.GREEN, Color.RED);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setViewGroup(wv_test);
@@ -83,6 +90,19 @@ public class WebViewActivity extends AppCompatActivity implements SwipeRefreshLa
         switch (requestCode) {
             case JsApi.REQUEST_CODE:
                 wv_test.loadUrl("javascript:showFromNative()");
+                wv_test.loadUrl("javascript: alertJs()");
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    String script = "getState(" + 1 + ")";
+                    wv_test.evaluateJavascript(script, new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String value) {
+                            Log.e("WebViewActivity", "" + value);
+                        }
+                    });
+                } else {
+//                    wv_test.loadUrl("javascript:getState()");
+                }
                 break;
         }
     }

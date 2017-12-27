@@ -27,6 +27,7 @@ public class LocalContentProvider extends ContentProvider {
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         File file = new File(Environment.getExternalStorageDirectory(), uri.getPath());
         ParcelFileDescriptor parcel = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_WRITE);
+
         return parcel;
     }
 

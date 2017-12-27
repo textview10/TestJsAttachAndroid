@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,51 +18,58 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.smtt.sdk.WebView;
 import com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout;
 
 /**
  * Created by xu.wang
- * Date on 2017/5/22 13:48
+ * Date on  2017/12/27 15:49:58.
+ *
+ * @Desc
  */
-public class WebViewActivity extends BaseWebViewActivity implements SwipeRefreshLayout.OnRefreshListener {
-    //    private String testUrl = "http://192.168.12.214:12091/";
+
+public class QQx5Activity extends BaseWebViewActivity implements SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = "QQx5Activity";
     private String testUrl = "file:///android_asset/zonkey/testjs.html";
-    private final static String TAG = "WebViewActivity";
     private final static String PROJECT_NAME = "zkzs";
+    private TextView tv_version;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
-        mWebView = (WebView) findViewById(R.id.wv_test);
-        tv_title = (TextView) findViewById(R.id.tv_webview_title);
-        mSwipeRefreshLayout = (ScrollSwipeRefreshLayout) findViewById(R.id.scroll_swipe_refresh_layout);
-        rl_nodata = (RelativeLayout) findViewById(R.id.rl_nodata);
-
+        setContentView(R.layout.activity_qq_x5);
+        initialView();
         initData();
+    }
 
+    private void initialView() {
+        mQQWebView = (WebView) findViewById(R.id.wv_qq_x5);
+        tv_title = (TextView) findViewById(R.id.tv_qqx5_title);
+        mSwipeRefreshLayout = (ScrollSwipeRefreshLayout) findViewById(R.id.sfl_qq_x5);
+        rl_nodata = (RelativeLayout) findViewById(R.id.rl_qqx5_nodata);
+        tv_version = (TextView) findViewById(R.id.tv_qqx5_version);
     }
 
     private void initData() {
+        tv_version.setText("QQx5内核");
         JsApi.getInstance().initial(this);
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.loadUrl(testUrl);
-        mWebView.addJavascriptInterface(JsApi.getInstance(), PROJECT_NAME);
+        mQQWebView.getSettings().setJavaScriptEnabled(true);
+        mQQWebView.loadUrl(testUrl);
+        mQQWebView.addJavascriptInterface(JsApi.getInstance(), PROJECT_NAME);
         mSwipeRefreshLayout.setColorSchemeColors(Color.GREEN, Color.RED);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setViewGroup(mWebView);
+        mSwipeRefreshLayout.setViewGroup(mQQWebView);
         mSwipeRefreshLayout.setRefreshing(true);
-        mWebView.setWebChromeClient(new WebChromeClient() {
+        mQQWebView.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient() {
             @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-//                Log.e(TAG, "progress = " + newProgress);
+            public void onProgressChanged(WebView webView, int newProgress) {
+                super.onProgressChanged(webView, newProgress);
+                Log.e(TAG, "progress = " + newProgress);
                 if (newProgress == 100) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     showWebView();
@@ -68,8 +77,8 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
             }
 
             @Override
-            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-                AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
+            public boolean onJsAlert(WebView webView, String url, String message, final com.tencent.smtt.export.external.interfaces.JsResult result) {
+                AlertDialog.Builder b = new AlertDialog.Builder(QQx5Activity.this);
                 b.setTitle("提示");
                 b.setMessage(message);
                 b.setPositiveButton("知道了", new DialogInterface.OnClickListener() {
@@ -79,16 +88,16 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
                     }
                 });
                 b.setCancelable(false);
-                if (WebViewActivity.this.isFinishing()) {
-                    return super.onJsAlert(view, url, message, result);
+                if (QQx5Activity.this.isFinishing()) {
+                    return super.onJsAlert(webView, url, message, result);
                 }
                 b.create().show();
                 return true;
             }
 
             @Override
-            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-                AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
+            public boolean onJsConfirm(WebView view, String url, String message, final com.tencent.smtt.export.external.interfaces.JsResult result) {
+                AlertDialog.Builder b = new AlertDialog.Builder(QQx5Activity.this);
                 b.setTitle("提示");
                 b.setMessage(message);
                 b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -103,7 +112,7 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
                         result.cancel();
                     }
                 });
-                if (WebViewActivity.this.isFinishing()) {
+                if (QQx5Activity.this.isFinishing()) {
                     return super.onJsConfirm(view, url, message, result);
                 }
                 b.create().show();
@@ -111,11 +120,11 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
             }
 
             @Override
-            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
-                final View v = LayoutInflater.from(WebViewActivity.this).inflate(R.layout.prompt_dialog, null);
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final com.tencent.smtt.export.external.interfaces.JsPromptResult result) {
+                final View v = LayoutInflater.from(QQx5Activity.this).inflate(R.layout.prompt_dialog, null);
                 ((TextView) v.findViewById(R.id.prompt_message_text)).setText(message);
                 ((EditText) v.findViewById(R.id.prompt_input_field)).setText(defaultValue);
-                AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
+                AlertDialog.Builder b = new AlertDialog.Builder(QQx5Activity.this);
                 b.setTitle("提示");
                 b.setView(v);
                 b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -131,40 +140,40 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
                         result.cancel();
                     }
                 });
-                if (WebViewActivity.this.isFinishing()) {
+                if (QQx5Activity.this.isFinishing()) {
                     return super.onJsPrompt(view, url, message, defaultValue, result);
                 }
                 b.create().show();
                 return true;
             }
+
         });
-        mWebView.setWebViewClient(new WebViewClient() {
+        mQQWebView.setWebViewClient(new com.tencent.smtt.sdk.WebViewClient() {
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
+            public void onReceivedError(WebView webView, int i, String s, String s1) {
+                super.onReceivedError(webView, i, s, s1);
                 Log.e(TAG, "onReceivedError");
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
                 Log.e(TAG, "shouldOverrideUrlLoading");
-                return super.shouldOverrideUrlLoading(view, request);
+                return super.shouldOverrideUrlLoading(webView, s);
             }
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case JsApi.REQUEST_CODE:
-                mWebView.loadUrl("javascript:showFromNative()");
-                mWebView.loadUrl("javascript: alertJs()");
+                mQQWebView.loadUrl("javascript:showFromNative()");
+                mQQWebView.loadUrl("javascript: alertJs()");
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     String script = "getState(" + 1 + ")";
-                    mWebView.evaluateJavascript(script, new ValueCallback<String>() {
+                    mQQWebView.evaluateJavascript(script, new com.tencent.smtt.sdk.ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
                             Log.e("WebViewActivity", "" + value);
@@ -179,9 +188,7 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        mWebView.loadUrl(testUrl);
+        mQQWebView.loadUrl(testUrl);
         mSwipeRefreshLayout.setRefreshing(true);
     }
-
-
 }

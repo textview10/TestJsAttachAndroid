@@ -25,7 +25,22 @@
     <button id="showWebView" type="button" style="margin-top: 20px">有数据</button>
 </div>
 <div>
-    <image src="content://com.zonkey.testjsattachandroid/12345.jpg"></image>
+    <button id="setTitle" type="button" style="margin-top: 20px">设置标题</button>
+</div>
+<div>
+    <button id="alert" type="button" style="margin-top: 20px">alert</button>
+</div>
+<div>
+    <button id="confirm" type="button" style="margin-top: 20px">confirm</button>
+    <button id="comfirm_result" type="button"></button>
+</div>
+<div>
+    <button id="prompt" type="button" style="margin-top: 20px">prompt</button>
+    <button id="prompt_result" type="button"></button>
+</div>
+<div>
+    <image src="content://com.zonkey.testjsattachandroid/12345.jpg" width="100" ,height="100"
+           style="margin-top: 20px"></image>
     <!--<image src=content://com.zonkey.testjsattachandroid/12345.jpg"></image>-->
 </div>
 
@@ -42,6 +57,10 @@
 
     document.getElementById("showEmpty").addEventListener("click", showEmptyView);
     document.getElementById("showWebView").addEventListener("click", showWebView);
+    document.getElementById("setTitle").addEventListener("click", setTitle);
+    document.getElementById("alert").addEventListener("click", showAlert);
+    document.getElementById("confirm").addEventListener("click", showConfirm);
+    document.getElementById("prompt").addEventListener("click", showPrompt)
 
     //打开一个原生Android界面,不同type对应不同界面
     function startActivity(e) {
@@ -50,6 +69,11 @@
         }
         window.zkzs.startActivity(type);
     };
+
+    function setTitle() {
+        var title = "设置标题"
+        window.zkzs.setTitle(title);
+    }
 
     //显示原生控件的loading 是否显示
     function setLoading() {
@@ -61,6 +85,11 @@
         } else {
             document.getElementById("setRefresh").innerHTML = "结束刷新";
         }
+    }
+
+    function showPrompt() {
+        var result = prompt("111-prompt");
+        document.getElementById("prompt_result").innerHTML = result;
     }
 
     //显示无数据界面
@@ -76,12 +105,21 @@
     function showFromNative() {
         document.getElementById("testAndroidInvokeJsFunction").innerHTML = " receive a msg from Android Native";
     }
-    function getState(state){
-//        setLoading()
-        if (state == 1){
+
+    function getState(state) {
+        if (state == 1) {
             state = 41;
         }
         return state;
+    }
+
+    function showConfirm() {
+        var result = confirm("confirm")
+        if (result) {
+            document.getElementById("comfirm_result").innerHTML = "点击了确定";
+        } else {
+            document.getElementById("comfirm_result").innerHTML = "点击了取消";
+        }
     }
 
     function showAlert() {

@@ -1,4 +1,4 @@
-package com.zonkey.testjsattachandroid.view;
+package com.test.testjsattachandroid.view;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;

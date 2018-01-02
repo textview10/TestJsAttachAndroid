@@ -1,4 +1,4 @@
-package com.zonkey.testjsattachandroid.contentprovider;
+package com.test.testjsattachandroid.contentprovider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,9 +1,12 @@
-package com.zonkey.testjsattachandroid;
+package com.test.testjsattachandroid.api.js;
 
 import android.content.Intent;
 import android.os.Looper;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import com.test.testjsattachandroid.SecondActivity;
+import com.test.testjsattachandroid.ui.activity.BaseWebViewActivity;
 
 /**
  * Created by xu.wang
@@ -15,7 +18,7 @@ import android.webkit.JavascriptInterface;
 public class BaseJsApi {
     public static final int REQUEST_CODE = 1111;
     public BaseWebViewActivity mActivity;
-    public static final String TAG = "JsApi";
+    public static final String TAG = "TestJsApi";
 
     public void initial(BaseWebViewActivity activity) {
         if (activity != null) {

@@ -1,4 +1,4 @@
-package com.zonkey.testjsattachandroid;
+package com.test.testjsattachandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+
+import com.test.testjsattachandroid.ui.activity.QQWebViewActivity;
+import com.test.testjsattachandroid.ui.activity.WebViewActivity;
 
 /**
  * Created by xu.wang
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         btn_qqx5_webview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, QQx5Activity.class));
+                startActivity(new Intent(MainActivity.this, QQWebViewActivity.class));
             }
         });
     }

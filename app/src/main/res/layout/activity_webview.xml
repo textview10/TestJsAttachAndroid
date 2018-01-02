@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.zonkey.testjsattachandroid.WebViewActivity">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,12 +29,12 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/tv_webview_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:text="原生webkit"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
@@ -44,20 +43,15 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout
-            android:id="@+id/scroll_swipe_refresh_layout"
+        <com.test.testjsattachandroid.view.ScrollSwipeRefreshLayout
+            android:id="@+id/ssrl_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <WebView
-                android:id="@+id/wv_test"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout>
+        </com.test.testjsattachandroid.view.ScrollSwipeRefreshLayout>
 
         <RelativeLayout
-            android:id="@+id/rl_nodata"
+            android:id="@+id/rl_webview_nodata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"

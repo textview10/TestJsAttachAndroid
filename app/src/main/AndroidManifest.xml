@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zonkey.testjsattachandroid">
+    package="com.test.testjsattachandroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -12,22 +12,22 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.test.testjsattachandroid.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebViewActivity">
+        <activity android:name="com.test.testjsattachandroid.ui.activity.WebViewActivity">
 
         </activity>
-        <activity android:name=".QQx5Activity"></activity>
-        <activity android:name=".SecondActivity"></activity>
+        <activity android:name="com.test.testjsattachandroid.ui.activity.QQWebViewActivity"></activity>
+        <activity android:name="com.test.testjsattachandroid.SecondActivity"></activity>
 
         <provider
-            android:name=".contentprovider.LocalContentProvider"
-            android:authorities="com.zonkey.testjsattachandroid" />
+            android:name="com.test.testjsattachandroid.contentprovider.LocalContentProvider"
+            android:authorities="com.test.testjsattachandroid" />
 
     </application>
 

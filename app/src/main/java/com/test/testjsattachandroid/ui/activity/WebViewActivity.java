@@ -1,15 +1,12 @@
-package com.zonkey.testjsattachandroid;
-
+package com.test.testjsattachandroid.ui.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -19,48 +16,37 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.zonkey.testjsattachandroid.view.ScrollSwipeRefreshLayout;
+import com.test.testjsattachandroid.R;
+import com.test.testjsattachandroid.api.js.TestJsApi;
 
 /**
  * Created by xu.wang
- * Date on 2017/5/22 13:48
+ * Date on  2018/1/2 09:32:13.
+ *
+ * @Desc 原生WebView
  */
-public class WebViewActivity extends BaseWebViewActivity implements SwipeRefreshLayout.OnRefreshListener {
-    //    private String testUrl = "http://192.168.12.214:12091/";
-    private String testUrl = "file:///android_asset/zonkey/testjs.html";
+
+public class WebViewActivity extends BaseWebViewActivity {
     private final static String TAG = "WebViewActivity";
-    private final static String PROJECT_NAME = "zkzs";
+    private WebView mWebView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
-        mWebView = (WebView) findViewById(R.id.wv_test);
-        tv_title = (TextView) findViewById(R.id.tv_webview_title);
-        mSwipeRefreshLayout = (ScrollSwipeRefreshLayout) findViewById(R.id.scroll_swipe_refresh_layout);
-        rl_nodata = (RelativeLayout) findViewById(R.id.rl_nodata);
-
+    public ViewGroup createWeView() {
+        mWebView = new WebView(this);
         initData();
-
+        return mWebView;
     }
 
     private void initData() {
-        JsApi.getInstance().initial(this);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.loadUrl(testUrl);
-        mWebView.addJavascriptInterface(JsApi.getInstance(), PROJECT_NAME);
-        mSwipeRefreshLayout.setColorSchemeColors(Color.GREEN, Color.RED);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setViewGroup(mWebView);
-        mSwipeRefreshLayout.setRefreshing(true);
+        mWebView.loadUrl(url);
+        mWebView.addJavascriptInterface(jsApi, PROJECT_NAME);
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-//                Log.e(TAG, "progress = " + newProgress);
                 if (newProgress == 100) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     showWebView();
@@ -112,30 +98,11 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
 
             @Override
             public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
-                final View v = LayoutInflater.from(WebViewActivity.this).inflate(R.layout.prompt_dialog, null);
-                ((TextView) v.findViewById(R.id.prompt_message_text)).setText(message);
-                ((EditText) v.findViewById(R.id.prompt_input_field)).setText(defaultValue);
-                AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
-                b.setTitle("提示");
-                b.setView(v);
-                b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String value = ((EditText) v.findViewById(R.id.prompt_input_field)).getText().toString();
-                        result.confirm(value);
-                    }
-                });
-                b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        result.cancel();
-                    }
-                });
-                if (WebViewActivity.this.isFinishing()) {
+                if (showPromptDialog(message, defaultValue, result)) {
+                    return true;
+                } else {
                     return super.onJsPrompt(view, url, message, defaultValue, result);
                 }
-                b.create().show();
-                return true;
             }
         });
         mWebView.setWebViewClient(new WebViewClient() {
@@ -153,12 +120,38 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
         });
     }
 
+    private boolean showPromptDialog(String message, String defaultValue, final JsPromptResult result) {
+        final View v = LayoutInflater.from(WebViewActivity.this).inflate(R.layout.dialog_prompt, null);
+        ((TextView) v.findViewById(R.id.tv_prompt_content)).setText(message);
+        ((EditText) v.findViewById(R.id.et_prompt)).setText(defaultValue);
+        AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
+        b.setTitle("提示");
+        b.setView(v);
+        b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = ((EditText) v.findViewById(R.id.et_prompt)).getText().toString();
+                result.confirm(value);
+            }
+        });
+        b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                result.cancel();
+            }
+        });
+        if (WebViewActivity.this.isFinishing()) {
+            return false;
+        }
+        b.create().show();
+        return true;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case JsApi.REQUEST_CODE:
+            case TestJsApi.REQUEST_CODE:
                 mWebView.loadUrl("javascript:showFromNative()");
                 mWebView.loadUrl("javascript: alertJs()");
 
@@ -179,9 +172,8 @@ public class WebViewActivity extends BaseWebViewActivity implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        mWebView.loadUrl(testUrl);
-        mSwipeRefreshLayout.setRefreshing(true);
+        super.onRefresh();
+        mWebView.loadUrl(url);
     }
-
 
 }

@@ -1,10 +1,12 @@
-package com.zonkey.testjsattachandroid;
+package com.test.testjsattachandroid;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+
+import com.test.testjsattachandroid.api.js.TestJsApi;
 
 /**
  * Created by xu.wang
@@ -29,7 +31,7 @@ public class SecondActivity extends AppCompatActivity {
         btn_second.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(JsApi.REQUEST_CODE);
+                setResult(TestJsApi.REQUEST_CODE);
                 finish();
             }
         });

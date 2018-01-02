@@ -1,4 +1,4 @@
-package com.zonkey.testjsattachandroid;
+package com.test.testjsattachandroid;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.test.testjsattachandroid.R;
@@ -39,6 +41,12 @@ public class QQWebViewActivity extends BaseWebViewActivity {
         mQQWebView.loadUrl(url);
         mQQWebView.addJavascriptInterface(jsApi, PROJECT_NAME);
         mQQWebView.setWebChromeClient(new com.tencent.smtt.sdk.WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.e(TAG, consoleMessage.message() + "");
+                return super.onConsoleMessage(consoleMessage);
+            }
+
             @Override
             public void onProgressChanged(WebView webView, int newProgress) {
                 super.onProgressChanged(webView, newProgress);

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 
+import com.test.testjsattachandroid.ui.activity.BaseWebViewActivity;
 import com.test.testjsattachandroid.ui.activity.QQWebViewActivity;
 import com.test.testjsattachandroid.ui.activity.WebViewActivity;
 
@@ -36,14 +37,18 @@ public class MainActivity extends AppCompatActivity {
         btn_webview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WebViewActivity.class));
+                Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                intent.putExtra(BaseWebViewActivity.TAG_TYPE,2);
+                startActivity(intent);
             }
         });
 
         btn_qqx5_webview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, QQWebViewActivity.class));
+                Intent intent = new Intent(MainActivity.this, QQWebViewActivity.class);
+                intent.putExtra(BaseWebViewActivity.TAG_TYPE,2);
+                startActivity(intent);
             }
         });
     }

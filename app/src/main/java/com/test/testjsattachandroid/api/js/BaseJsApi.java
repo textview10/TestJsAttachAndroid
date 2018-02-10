@@ -18,7 +18,7 @@ import com.test.testjsattachandroid.ui.activity.BaseWebViewActivity;
 public class BaseJsApi {
     public static final int REQUEST_CODE = 1111;
     public BaseWebViewActivity mActivity;
-    public static final String TAG = "TestJsApi";
+    public String TAG = "TestJsApi";
 
     public void initial(BaseWebViewActivity activity) {
         if (activity != null) {
@@ -30,7 +30,7 @@ public class BaseJsApi {
     @JavascriptInterface
     public void setLoading(final boolean isLoading) {
         Log.e(TAG, "isLoading = " + isLoading);
-        if (Thread.currentThread() != Looper.getMainLooper().getThread()){
+        if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -78,8 +78,9 @@ public class BaseJsApi {
             }
         });
     }
+
     @JavascriptInterface
-    public void setTitle(final String title){
+    public void setTitle(final String title) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

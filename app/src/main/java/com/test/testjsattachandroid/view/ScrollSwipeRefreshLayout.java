@@ -35,12 +35,12 @@ public class ScrollSwipeRefreshLayout extends SwipeRefreshLayout {
     @Override
     public boolean onTouchEvent(MotionEvent arg0) {
         if (null != viewGroup) {
-            if (viewGroup.getScrollY() > 1) {
-                //直接截断时间传播
-                return false;
-            } else {
+//            if (viewGroup.getScrollY() > 1) {
+//                //直接截断时间传播
+//                return false;
+//            } else {
                 return super.onTouchEvent(arg0);
-            }
+//            }
         }
         return super.onTouchEvent(arg0);
     }

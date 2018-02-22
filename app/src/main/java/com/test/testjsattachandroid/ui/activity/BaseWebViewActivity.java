@@ -1,11 +1,9 @@
 package com.test.testjsattachandroid.ui.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -18,12 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tencent.smtt.sdk.ValueCallback;
-import com.test.testjsattachandroid.BuildConfig;
 import com.test.testjsattachandroid.api.js.BaseJsApi;
 import com.test.testjsattachandroid.R;
 import com.test.testjsattachandroid.api.js.TestJsApi;
-import com.test.testjsattachandroid.view.ScrollSwipeRefreshLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +34,7 @@ import butterknife.ButterKnife;
  * @Desc
  */
 
-public abstract class BaseWebViewActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseWebViewActivity extends AppCompatActivity implements OnRefreshListener {
     private static final String TAG = "BaseWebViewActivity";
     public static final String TAG_TYPE = "WEB_CONTENT_TYPE";
     public static final String PROJECT_NAME = "wise_class";    //项目名称,用于Js与原生通讯
@@ -46,8 +45,8 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
 
     @BindView(R.id.tv_webview_title)
     public TextView tv_title;
-    @BindView(R.id.ssrl_webview)
-    public ScrollSwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.srl_webview)
+    public SmartRefreshLayout mSmartRefreshLayout;
     @BindView(R.id.rl_webview_nodata)
     public RelativeLayout rl_nodata;
     @BindView(R.id.tv_webview_type)
@@ -94,7 +93,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
                     ((com.tencent.smtt.sdk.WebView) viewGroup).evaluateJavascript(script, new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String s) {
-                            Log.e(TAG,"onReceiveValueSuccess = " + s);
+                            Log.e(TAG, "onReceiveValueSuccess = " + s);
                         }
                     });
                 } else if (viewGroup instanceof WebView) {
@@ -104,7 +103,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
                         ((WebView) viewGroup).evaluateJavascript(script, new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String s) {
-                                Log.e(TAG,"onReceiveValueSuccess = " + s);
+                                Log.e(TAG, "onReceiveValueSuccess = " + s);
                             }
                         });
                     }
@@ -125,7 +124,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
                 }
                 break;
             case 2:
-                url = "http://192.168.13.213:8080";
+                url = "http://192.168.13.213:8081";
                 jsApi = new TestJsApi();
                 jsApi.initial(this);
                 break;
@@ -138,12 +137,13 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
     }
 
     private void initialData() {
-        mSwipeRefreshLayout.setColorSchemeColors(Color.GREEN, Color.RED, Color.BLUE);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSmartRefreshLayout.setDragRate(0.6f);//显示下拉高度/手指真实下拉高度=阻尼效果
+        mSmartRefreshLayout.setReboundDuration(300);//回弹动画时长（毫秒）
+        mSmartRefreshLayout.setHeaderMaxDragRate(3);//最大显示下拉高度/Header标准高度
+        mSmartRefreshLayout.setOnRefreshListener(this);
+        mSmartRefreshLayout.setEnableLoadmore(false);
         viewGroup = createWeView();
-        mSwipeRefreshLayout.addView(viewGroup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mSwipeRefreshLayout.setViewGroup(viewGroup);
+        mSmartRefreshLayout.addView(viewGroup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (viewGroup instanceof com.tencent.smtt.sdk.WebView) {  //是QQ浏览器
             tv_type.setText("QQ x5");
             type = 1;
@@ -160,17 +160,17 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
     public void setLoading(final boolean isRefreshing) {
         Log.e(TAG, "show loading() ");
         if (isRefreshing) {
-            mSwipeRefreshLayout.post(new Runnable() {
+            mSmartRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
+                    mSmartRefreshLayout.finishRefresh(true);
                 }
             });
         } else {
-            mSwipeRefreshLayout.post(new Runnable() {
+            mSmartRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSmartRefreshLayout.finishRefresh(false);
                 }
             });
         }
@@ -178,7 +178,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
 
     public void showEmptyView() {
         Log.e(TAG, "showEmptyView");
-        View child = mSwipeRefreshLayout.getChildAt(0);
+        View child = mSmartRefreshLayout.getChildAt(0);
         if (child != null) {
             if (child.getVisibility() != View.GONE) {
                 child.setVisibility(View.GONE);
@@ -190,10 +190,11 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
     }
 
     public void showWebView() {
-        Log.e(TAG, "showWebView");
-        View child = mSwipeRefreshLayout.getChildAt(0);
+        View child = mSmartRefreshLayout.getChildAt(0);
+        Log.e(TAG, "child == null ? " + (child == null));
         if (child != null) {
             if (child.getVisibility() != View.VISIBLE) {
+                Log.e(TAG, "showWebView");
                 child.setVisibility(View.VISIBLE);
             }
         }
@@ -204,11 +205,6 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
 
     public void setWebViewTitle(String msg) {
         tv_title.setText(msg);
-    }
-
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -232,5 +228,10 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements S
 //                }
 //                break;
 //        }
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshlayout) {
+
     }
 }

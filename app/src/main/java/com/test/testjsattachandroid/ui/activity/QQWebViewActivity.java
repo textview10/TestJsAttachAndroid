@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.test.testjsattachandroid.R;
 import com.test.testjsattachandroid.api.js.TestJsApi;
+import com.test.testjsattachandroid.view.DispatchQqWebView;
 
 /**
  * Created by xu.wang
@@ -27,11 +28,11 @@ import com.test.testjsattachandroid.api.js.TestJsApi;
 
 public class QQWebViewActivity extends BaseWebViewActivity {
     private static final String TAG = "QQWebViewActivity";
-    private WebView mQQWebView;
+    private DispatchQqWebView mQQWebView;
 
     @Override
     public ViewGroup createWeView() {
-        mQQWebView = new WebView(this);
+        mQQWebView = new DispatchQqWebView(this);
         initData();
         return mQQWebView;
     }
@@ -50,9 +51,8 @@ public class QQWebViewActivity extends BaseWebViewActivity {
             @Override
             public void onProgressChanged(WebView webView, int newProgress) {
                 super.onProgressChanged(webView, newProgress);
-                Log.e(TAG, "progress = " + newProgress);
                 if (newProgress == 100) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSmartRefreshLayout.finishRefresh(true);
                     showWebView();
                 }
             }
@@ -168,9 +168,10 @@ public class QQWebViewActivity extends BaseWebViewActivity {
     }
 
     @Override
-    public void onRefresh() {
-        super.onRefresh();
+    public void onRefresh(RefreshLayout refreshlayout) {
+        super.onRefresh(refreshlayout);
         mQQWebView.loadUrl(url);
     }
+
 
 }

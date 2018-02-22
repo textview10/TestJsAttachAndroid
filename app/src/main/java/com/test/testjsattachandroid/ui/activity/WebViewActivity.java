@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.test.testjsattachandroid.R;
 import com.test.testjsattachandroid.api.js.TestJsApi;
 
@@ -48,7 +49,7 @@ public class WebViewActivity extends BaseWebViewActivity {
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
                 if (newProgress == 100) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSmartRefreshLayout.finishRefresh(false);
                     showWebView();
                 }
             }
@@ -171,8 +172,8 @@ public class WebViewActivity extends BaseWebViewActivity {
     }
 
     @Override
-    public void onRefresh() {
-        super.onRefresh();
+    public void onRefresh(RefreshLayout refreshlayout) {
+        super.onRefresh(refreshlayout);
         mWebView.loadUrl(url);
     }
 

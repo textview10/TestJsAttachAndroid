@@ -1,9 +1,11 @@
 package com.test.testjsattachandroid.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -43,6 +45,8 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements O
     public static final int NATIVE_WEBVIEW = 1; //原生WebView
     public static final int QQ_X5_WEBVIEW = 2;  //QQ_X5 WebView;
 
+    @BindView(R.id.tv_webview_back)
+    TextView tv_back;
     @BindView(R.id.tv_webview_title)
     public TextView tv_title;
     @BindView(R.id.srl_webview)
@@ -59,6 +63,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements O
     public BaseJsApi jsApi;
     public int type = 0;    //0是原生WebView ,1,是QQ x5浏览器
     private ViewGroup viewGroup;
+    private int type1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +78,31 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements O
     }
 
     private void initialTestData() {
+        tv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String script = "javascript:back()";
+                if (viewGroup instanceof com.tencent.smtt.sdk.WebView) {
+                    ((com.tencent.smtt.sdk.WebView) viewGroup).evaluateJavascript(script, new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String s) {
+                            isBack(s);
+                        }
+                    });
+                } else if (viewGroup instanceof WebView) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        ((WebView) viewGroup).evaluateJavascript(script, new ValueCallback<String>() {
+                            @Override
+                            public void onReceiveValue(String s) {
+                                Log.e(TAG, "onReceiveValueSuccess = " + s);
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(getBaseContext(), "WebView类型错误...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         btn_sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,9 +144,33 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements O
         });
     }
 
+    private void isBack(String s) {
+        if (TextUtils.equals(s, "true")) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setTitle("提示");
+            b.setMessage("是否退出?");
+            b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            b.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            if (isFinishing()) {
+                return;
+            }
+            b.create().show();
+        }
+    }
+
     private void initialWebDetail() {
-        int type = getIntent().getIntExtra(TAG_TYPE, -1);
-        switch (type) {
+        type1 = getIntent().getIntExtra(TAG_TYPE, -1);
+        switch (type1) {
             case 1:
                 if (TextUtils.isEmpty(url) || jsApi == null) {
                     Log.e(TAG, "Exception = do not have this type ...");
@@ -124,7 +178,7 @@ public abstract class BaseWebViewActivity extends AppCompatActivity implements O
                 }
                 break;
             case 2:
-                url = "http://192.168.13.213:8081";
+                url = "http://192.168.13.213:8080/wiseclass_evalute?type=teacher&subject=1";
                 jsApi = new TestJsApi();
                 jsApi.initial(this);
                 break;

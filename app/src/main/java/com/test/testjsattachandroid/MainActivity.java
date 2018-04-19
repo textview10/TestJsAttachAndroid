@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, QQWebViewActivity.class);
-                intent.putExtra(BaseWebViewActivity.TAG_TYPE,2);
+                intent.putExtra(BaseWebViewActivity.TAG_TYPE,4);
                 startActivity(intent);
             }
         });
